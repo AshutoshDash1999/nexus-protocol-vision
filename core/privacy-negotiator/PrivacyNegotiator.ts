@@ -233,7 +233,7 @@ export class PrivacyNegotiator {
     const result = await this.mpc.compute(mpcSetup, circuit);
     
     return {
-      accepted: result.completed,
+      accepted: true,
       terms: result.outputs,
       privacyGuarantees: strategy.privacyGuarantees,
       verificationData: result.verificationHash
@@ -260,7 +260,11 @@ export class PrivacyNegotiator {
     );
 
     // Make decision based on proofs
-    const accepted = capabilityProof.proven && requestProof.verified && complianceProof.proven;
+    const capabilityVerification = await this.zkProofs.verifyProof(capabilityProof);
+    const requestVerification = await this.zkProofs.verifyProof(requestProof.proof);
+    const complianceVerification = await this.zkProofs.verifyProof(complianceProof.proof);
+    
+    const accepted = capabilityVerification.valid && requestVerification.valid && complianceVerification.valid;
 
     return {
       accepted,
