@@ -49,7 +49,7 @@ The Nexus Protocol consists of **nine interconnected core systems** that work to
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/nexus-protocol-vision.git
+   git clone https://github.com/Puneet04-tech/nexus-protocol-vision.git
    cd nexus-protocol-vision
    ```
 
