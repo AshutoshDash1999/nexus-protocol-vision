@@ -192,7 +192,8 @@ export class SecureAggregation {
     }
     
     // Subtract all participant masks
-    for (const mask of participantMasks.values()) {
+    const maskArray = Array.from(participantMasks.values());
+    for (const mask of maskArray) {
       for (let i = 0; i < unmaskedWeights.length; i++) {
         unmaskedWeights[i] -= mask[i % mask.length];
       }
