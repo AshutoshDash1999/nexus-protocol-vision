@@ -21,6 +21,11 @@ import GlobalReset from './components/GlobalReset';
 import { useErrorState } from './contexts/ErrorStateContext';
 import ProtocolDiagnostics from './components/ProtocolDiagnostics';
 import NexusReport from './components/NexusReport';
+import RealTimeSovereignPersona from './components/RealTimeSovereignPersona';
+import RealTimeSystemMetrics from './components/RealTimeSystemMetrics';
+import RealTimeCognitiveGraph from './components/RealTimeCognitiveGraph';
+import RealTimePrivacyNegotiator from './components/RealTimePrivacyNegotiator';
+import RealTimeCarbonAware from './components/RealTimeCarbonAware';
 
 const gridContainerVariants = {
   hidden: { opacity: 0 },
@@ -44,6 +49,7 @@ const gridItemVariants = {
 const navItems = [
     { name: 'Explore', link: '#explore' },
     { name: 'Concepts', link: '#concepts' },
+    { name: 'Real-Time', link: '#realtime' },
     { name: 'Diagnostics', link: '#diagnostics' },
     { name: 'Visualize', link: '#visualize' },
     { name: 'Scenarios', link: '#scenarios' },
@@ -145,6 +151,30 @@ const App: React.FC = () => {
                         </motion.div>
                     ))}
                     </motion.div>
+                </AnimatedSection>
+
+                <AnimatedSection id="realtime">
+                    <div className="space-y-8">
+                        <div className="text-center">
+                            <h2 className="text-3xl font-bold text-white mb-4">Real-Time Core Systems</h2>
+                            <p className="text-gray-300 max-w-2xl mx-auto">
+                                Experience the Nexus Protocol core systems operating in real-time with live data processing, 
+                                privacy negotiations, cognitive graph updates, and carbon-aware optimization.
+                            </p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <RealTimeSovereignPersona />
+                            <RealTimeSystemMetrics />
+                        </div>
+                        
+                        <RealTimeCognitiveGraph />
+                        
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <RealTimePrivacyNegotiator />
+                            <RealTimeCarbonAware />
+                        </div>
+                    </div>
                 </AnimatedSection>
 
                 <AnimatedSection id="diagnostics">
