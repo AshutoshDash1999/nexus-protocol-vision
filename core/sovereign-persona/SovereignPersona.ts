@@ -7,6 +7,8 @@ import { CognitiveGraph } from './CognitiveGraph';
 import { FederatedLearningClient } from '../federated-learning/FederatedLearningClient';
 import { PrivacyNegotiator } from '../privacy-negotiator/PrivacyNegotiator';
 import { CarbonAwareOptimizer } from '../carbon-aware/CarbonAwareOptimizer';
+import { AIOperation } from '../carbon-aware/CarbonAwareOptimizer';
+import { CarbonBudget } from '../carbon-aware/CarbonAwareOptimizer';
 
 export interface PersonaProfile {
   id: string;
@@ -50,9 +52,27 @@ export class SovereignPersona {
   constructor(profile: PersonaProfile) {
     this.profile = profile;
     this.cognitiveGraph = new CognitiveGraph(profile.id);
-    this.federatedClient = new FederatedLearningClient(profile.id);
+    this.federatedClient = new FederatedLearningClient({
+      clientId: profile.id,
+      serverUrl: 'https://federated.nexus-protocol.org',
+      participationRate: 0.8,
+      privacyBudget: 2.0,
+      minClients: 10,
+      communicationRounds: 100,
+      localEpochs: 5
+    });
     this.privacyNegotiator = new PrivacyNegotiator(profile.privacyPreferences);
-    this.carbonOptimizer = new CarbonAwareOptimizer(profile.carbonFootprintTarget);
+    this.carbonOptimizer = new CarbonAwareOptimizer({
+      dailyLimit: profile.carbonFootprintTarget,
+      weeklyLimit: profile.carbonFootprintTarget * 7,
+      monthlyLimit: profile.carbonFootprintTarget * 30,
+      currentUsage: 0,
+      remainingBudget: profile.carbonFootprintTarget,
+      alertThresholds: {
+        warning: 80,
+        critical: 95
+      }
+    });
   }
 
   /**
@@ -69,7 +89,15 @@ export class SovereignPersona {
     }
 
     // Optimize for carbon efficiency
-    const carbonOptimized = await this.carbonOptimizer.optimize(interaction);
+    const aiOperation: AIOperation = {
+      id: `op_${Date.now()}`,
+      type: 'inference',
+      modelSize: 1000000,
+      dataVolume: 1000,
+      computeIntensity: 0.7,
+      priority: 'medium'
+    };
+    const carbonOptimized = await this.carbonOptimizer.optimize(aiOperation);
 
     // Store locally with encryption
     await this.storeLocally(interaction, carbonOptimized);
@@ -82,7 +110,7 @@ export class SovereignPersona {
     return {
       processed: true,
       knowledgeGained: knowledgeUpdate.newConcepts,
-      carbonSaved: carbonOptimized.carbonReduction,
+      carbonSaved: carbonOptimized.estimatedSavings,
       privacyPreserved: true
     };
   }
@@ -232,6 +260,6 @@ export interface NegotiationRequest {
 export interface NegotiationResult {
   accepted: boolean;
   terms: any;
-  privacyGuarantees: string[];
+  privacyGuarantees: any[];
   carbonImpact: number;
 }

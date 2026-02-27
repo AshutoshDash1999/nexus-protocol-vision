@@ -91,11 +91,11 @@ export const CognitiveGraphVisualization: React.FC<CognitiveGraphVisualizationPr
       .enter().append('line')
       .attr('stroke', '#999')
       .attr('stroke-opacity', 0.6)
-      .attr('stroke-width', d => Math.sqrt(d.strength * 5))
+      .attr('stroke-width', (d: any) => Math.sqrt((d as Link).strength * 5))
       .style('cursor', 'pointer')
       .on('click', (event, d) => {
         event.stopPropagation();
-        onLinkClick?.(d);
+        onLinkClick?.(d as Link);
       });
 
     // Create link labels
@@ -103,7 +103,7 @@ export const CognitiveGraphVisualization: React.FC<CognitiveGraphVisualizationPr
       .selectAll('text')
       .data(links)
       .enter().append('text')
-      .text(d => d.type)
+      .text((d: any) => (d as Link).type)
       .attr('font-size', '10px')
       .attr('fill', '#666')
       .attr('text-anchor', 'middle')
@@ -122,17 +122,17 @@ export const CognitiveGraphVisualization: React.FC<CognitiveGraphVisualizationPr
 
     // Add circles for nodes
     node.append('circle')
-      .attr('r', d => 10 + d.confidence * 15)
-      .attr('fill', d => domainColors[d.domain as keyof typeof domainColors] || domainColors.general)
+      .attr('r', (d: any) => 10 + (d as Node).confidence * 15)
+      .attr('fill', (d: any) => domainColors[(d as Node).domain as keyof typeof domainColors] || domainColors.general)
       .attr('stroke', '#fff')
       .attr('stroke-width', 2)
       .on('click', (event, d) => {
         event.stopPropagation();
-        setSelectedNode(d);
-        onNodeClick?.(d);
+        setSelectedNode(d as Node);
+        onNodeClick?.(d as Node);
       })
       .on('mouseenter', (event, d) => {
-        setHoveredNode(d);
+        setHoveredNode(d as Node);
       })
       .on('mouseleave', () => {
         setHoveredNode(null);
@@ -140,7 +140,7 @@ export const CognitiveGraphVisualization: React.FC<CognitiveGraphVisualizationPr
 
     // Add labels for nodes
     node.append('text')
-      .text(d => d.label)
+      .text((d: any) => (d as Node).label)
       .attr('font-size', '12px')
       .attr('text-anchor', 'middle')
       .attr('dy', -20)
@@ -148,7 +148,7 @@ export const CognitiveGraphVisualization: React.FC<CognitiveGraphVisualizationPr
 
     // Add confidence indicators
     node.append('text')
-      .text(d => `${Math.round(d.confidence * 100)}%`)
+      .text((d: any) => `${Math.round((d as Node).confidence * 100)}%`)
       .attr('font-size', '10px')
       .attr('text-anchor', 'middle')
       .attr('dy', 5)
@@ -157,16 +157,16 @@ export const CognitiveGraphVisualization: React.FC<CognitiveGraphVisualizationPr
     // Update positions on tick
     sim.on('tick', () => {
       link
-        .attr('x1', d => (d.source as Node).x!)
-        .attr('y1', d => (d.source as Node).y!)
-        .attr('x2', d => (d.target as Node).x!)
-        .attr('y2', d => (d.target as Node).y!);
+        .attr('x1', (d: any) => (d.source as Node).x!)
+        .attr('y1', (d: any) => (d.source as Node).y!)
+        .attr('x2', (d: any) => (d.target as Node).x!)
+        .attr('y2', (d: any) => (d.target as Node).y!);
 
       linkLabels
-        .attr('x', d => ((d.source as Node).x! + (d.target as Node).x!) / 2)
-        .attr('y', d => ((d.source as Node).y! + (d.target as Node).y!) / 2);
+        .attr('x', (d: any) => ((d.source as Node).x! + (d.target as Node).x!) / 2)
+        .attr('y', (d: any) => ((d.source as Node).y! + (d.target as Node).y!) / 2);
 
-      node.attr('transform', d => `translate(${d.x},${d.y})`);
+      node.attr('transform', (d: any) => `translate(${(d as Node).x},${(d as Node).y})`);
     });
 
     setSimulation(sim);
