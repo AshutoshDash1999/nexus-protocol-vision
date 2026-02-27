@@ -8,6 +8,14 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        hmr: {
+          port: 3000,
+          clientPort: 3000,
+        },
+        watch: {
+          usePolling: true,
+          interval: 1000,
+        },
       },
       plugins: [react()],
       define: {

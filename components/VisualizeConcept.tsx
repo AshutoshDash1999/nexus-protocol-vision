@@ -50,6 +50,11 @@ const VisualizeConcept: React.FC = () => {
         addLog('ZKP', 'Providing proof of identity for high-fidelity generation...', 'success');
 
         try {
+            // Check if API key is available
+            if (!process.env.API_KEY || process.env.API_KEY === 'your_actual_gemini_api_key_here') {
+                throw new Error('Please set your Gemini API key in .env.local file');
+            }
+
             const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
             const promptGenerationResponse = await ai.models.generateContent({
