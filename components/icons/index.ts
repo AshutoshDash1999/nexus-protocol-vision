@@ -17,3 +17,13 @@ export { default as UserIcon } from './UserIcon';
 export { default as WarningIcon } from './WarningIcon';
 export { default as WhitepaperIcon } from './WhitepaperIcon';
 export { default as XCircleIcon } from './XCircleIcon';
+export { 
+  CognitiveGraphIcon, 
+  FederatedLearningIcon, 
+  PrivacyNegotiatorIcon, 
+  MorphNetEngineIcon, 
+  AdversarialImmuneIcon, 
+  CarbonAwareIcon, 
+  LatentSpaceIcon, 
+  MonitoringIcon 
+} from './AdditionalIcons';

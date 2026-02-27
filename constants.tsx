@@ -8,6 +8,14 @@ import {
   OptimizationIcon,
   SecurityIcon,
   InteroperableIcon,
+  CognitiveGraphIcon,
+  FederatedLearningIcon,
+  PrivacyNegotiatorIcon,
+  MorphNetEngineIcon,
+  AdversarialImmuneIcon,
+  CarbonAwareIcon,
+  LatentSpaceIcon,
+  MonitoringIcon,
 } from './components/icons';
 
 export const NEXUS_PROTOCOL_CONTEXT = `
@@ -33,38 +41,56 @@ In One Simple Sentence: The Nexus Protocol is a private, intelligent, self-optim
 export const FEATURES: FeatureData[] = [
   {
     icon: <SovereignPersonaIcon />,
-    title: "Sovereign Persona",
+    title: "🧠 Sovereign Persona",
     description: "A highly intelligent digital version of you that lives on your device, not in the cloud.",
     details: ["Understands your goals & context", "Knows your strengths & weaknesses", "Respects your ethical limits", "Builds a 'Cognitive Graph' of how you think"]
   },
   {
-    icon: <PrivacyIcon />,
-    title: "Privacy-Preserving Learning",
-    description: "Your AI learns locally, sharing only mathematical updates, never your actual data.",
-    details: ["Learns on your device", "Only shares tiny mathematical updates", "Privacy is protected by design", "Utilizes Federated Learning"]
+    icon: <CognitiveGraphIcon />,
+    title: "📊 Cognitive Graph",
+    description: "Dynamic knowledge mapping that tracks your learning patterns and identifies knowledge gaps.",
+    details: ["Real-time knowledge updates", "Learning path optimization", "Knowledge gap identification", "Confidence scoring across domains"]
   },
   {
-    icon: <NegotiatorIcon />,
-    title: "AI as a Negotiator",
-    description: "Your AI securely negotiates on your behalf with other digital systems and agents.",
-    details: ["Uses Multi-Party Computation (MPC)", "Employs Zero-Knowledge Proofs", "Achieves goals without revealing private data", "Acts as your autonomous agent"]
+    icon: <FederatedLearningIcon />,
+    title: "🤝 Federated Learning",
+    description: "Privacy-preserving collaborative learning without sharing raw data.",
+    details: ["Secure aggregation of insights", "Differential privacy guarantees", "Model personalization", "Contribution tracking"]
   },
   {
-    icon: <OptimizationIcon />,
-    title: "Recursive Optimization",
-    description: "The AI dynamically adjusts its own complexity to save energy and reduce its carbon impact.",
-    details: ["Uses 'small brain mode' for simple tasks", "Scales up for complex reasoning", "Dynamically prunes its neural network", "Carbon-Aware and hyper-efficient"]
+    icon: <PrivacyNegotiatorIcon />,
+    title: "🔒 Privacy Negotiator",
+    description: "Autonomous agent communication using advanced cryptographic techniques.",
+    details: ["Multi-Party Computation (MPC)", "Zero-Knowledge Proofs (ZKP)", "Smart contract integration", "Privacy budget management"]
   },
   {
-    icon: <SecurityIcon />,
-    title: "AI Immune System",
-    description: "An advanced security layer that monitors intent to neutralize threats in real-time.",
-    details: ["Monitors incoming instructions for intent", "Detects and stops malicious prompts", "Prevents 'prompt injection' attacks", "Stops agent hijacking attempts"]
+    icon: <MorphNetEngineIcon />,
+    title: "⚡ MorphNet Engine",
+    description: "Recursive optimization for hyper-efficient AI operations.",
+    details: ["Dynamic architecture pruning", "Carbon-aware optimization", "Real-time adaptation", "Resource allocation"]
   },
   {
-    icon: <InteroperableIcon />,
-    title: "Open and Interoperable",
-    description: "An open-source system designed for compatibility, allowing different AIs to communicate.",
-    details: ["Fully open-source", "Not controlled by a single company", "Compatible with other AI systems", "Uses 'Latent Space Mapping' for universal understanding"]
+    icon: <AdversarialImmuneIcon />,
+    title: "🛡️ Adversarial Immune System",
+    description: "Real-time protection against malicious inputs and attacks.",
+    details: ["Semantic intent analysis", "Prompt injection detection", "Agent hijacking prevention", "Behavioral anomaly detection"]
+  },
+  {
+    icon: <CarbonAwareIcon />,
+    title: "🌱 Carbon-Aware Optimizer",
+    description: "Environmental impact monitoring and optimization.",
+    details: ["Real-time carbon tracking", "Carbon budget management", "Optimization opportunities", "Sustainability reporting"]
+  },
+  {
+    icon: <LatentSpaceIcon />,
+    title: "🗺️ Latent Space Mapping",
+    description: "Universal interoperability protocol for AI systems.",
+    details: ["Cross-model communication", "Semantic translation", "Universal embeddings", "Interoperability standards"]
+  },
+  {
+    icon: <MonitoringIcon />,
+    title: "📈 Monitoring & Analytics",
+    description: "Comprehensive system monitoring and insights.",
+    details: ["Performance metrics tracking", "Usage analytics", "Health monitoring", "Predictive analytics"]
   }
 ];
