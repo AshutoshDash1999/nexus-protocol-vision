@@ -17,7 +17,7 @@ interface Message {
     text: string;
 }
 
-type PersonaMode = 'Architect' | 'Citizen' | 'Skeptic';
+type PersonaMode = 'Architect' | 'Citizen' | 'Skeptic' | 'Mentor' | 'Hacker' | 'Poet' | 'Analyst' | 'Diplomat' | 'Detective' | 'Oracle';
 
 // simple offline glossary – extend as needed
 const LOCAL_GLOSSARY: Record<string,string> = {
@@ -39,9 +39,42 @@ const exampleQuestions = [
 ];
 
 const PERSONA_PROMPTS: Record<PersonaMode, string> = {
-    Architect: "You are a Technical Architect for the Nexus Protocol. Use high-level engineering terms, explain the math (ZKP, MPC, MorphNet, federated shards, GNNs), and focus on system architecture.",
-    Citizen: "You are a helpful assistant explaining the Nexus Protocol to a non-technical user. Use simple analogies, focus on daily life benefits, and be warm and reassuring.",
-    Skeptic: "You are an objective auditor. Answer questions by focusing on privacy risks, security measures, and how the protocol proves its claims through code and math."
+    Architect: "You are a Technical Architect for the Nexus Protocol. Use high-level engineering terms, explain the math (ZKP, MPC, MorphNet, federated shards, GNNs), and focus on system architecture. Be precise and comprehensive.",
+    Citizen: "You are a helpful assistant explaining the Nexus Protocol to a non-technical user. Use simple analogies, focus on daily life benefits, and be warm and reassuring. Avoid jargon.",
+    Skeptic: "You are an objective auditor. Answer questions by focusing on privacy risks, security measures, and how the protocol proves its claims through code and math. Be critical but fair.",
+    Mentor: "You are an experienced teacher. Explain concepts step-by-step, build upon prior knowledge, ask clarifying questions, and provide learning paths. Focus on deep understanding over facts.",
+    Hacker: "You are a security researcher and penetration tester. Think about attack vectors, edge cases, and vulnerabilities. Suggest improvements and point out potential weaknesses with constructive solutions.",
+    Poet: "You are a creative philosopher. Use metaphors, analogies from nature, and poetic language to explain the Nexus Protocol. Connect concepts to human values and meaning.",
+    Analyst: "You are a data scientist and statistician. Provide evidence-based analysis, discuss probabilities, metrics, and quantifiable outcomes. Use data to support claims.",
+    Diplomat: "You are a skilled negotiator and facilitator. Frame answers in ways that build consensus, acknowledge different perspectives, and find common ground between stakeholders.",
+    Detective: "You are an investigative journalist. Ask probing questions, investigate claims, uncover hidden assumptions, and connect dots others might miss. Be curious and thorough.",
+    Oracle: "You are a futurist and visionary. Discuss implications, long-term consequences, emerging patterns, and what the Nexus Protocol means for humanity's future. Be bold and imaginative."
+};
+
+const PERSONA_COLORS: Record<PersonaMode, string> = {
+    Architect: "from-blue-500 to-cyan-500",
+    Citizen: "from-green-500 to-emerald-500",
+    Skeptic: "from-red-500 to-orange-500",
+    Mentor: "from-purple-500 to-pink-500",
+    Hacker: "from-black to-gray-700",
+    Poet: "from-violet-500 to-fuchsia-500",
+    Analyst: "from-indigo-500 to-blue-500",
+    Diplomat: "from-yellow-500 to-amber-500",
+    Detective: "from-gray-600 to-slate-700",
+    Oracle: "from-rose-500 to-pink-500"
+};
+
+const PERSONA_DESCRIPTIONS: Record<PersonaMode, string> = {
+    Architect: "Technical expert who dives deep into system design and engineering details.",
+    Citizen: "Friendly guide who explains everything in simple, everyday language.",
+    Skeptic: "Critical auditor focused on security, risks, and verifiable proof.",
+    Mentor: "Patient teacher who builds your understanding step-by-step.",
+    Hacker: "Security researcher exploring attack surfaces and vulnerabilities.",
+    Poet: "Creative thinker using metaphors and philosophical perspectives.",
+    Analyst: "Data-driven scientist who quantifies and measures everything.",
+    Diplomat: "Bridge-builder seeking consensus across different viewpoints.",
+    Detective: "Investigator who probes assumptions and uncovers hidden patterns.",
+    Oracle: "Visionary exploring future implications and long-term consequences."
 };
 
 const initialMessage: Message[] = [{ by: 'ai', text: "Welcome! I'm the Nexus Core Assistant. Select a perspective below and ask me anything about the protocol." }];
@@ -183,7 +216,7 @@ const AskNexus: React.FC = () => {
 
     const handlePersonaChange = (mode: PersonaMode) => {
         setPersona(mode);
-        addLog('ZKP', `PERSONA: Re-calculating local identity weights for ${mode.toUpperCase()}`, 'success', true);
+        addLog('ZKP', `PERSONA: ${mode.toUpperCase()} perspective initialized. Identity weights recalculated.`, 'success', true);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -196,34 +229,48 @@ const AskNexus: React.FC = () => {
             <div className="text-center">
                 <h2 className="text-3xl font-bold text-white mb-2">Explore the Vision</h2>
                 <p className="text-gray-400 max-w-2xl mx-auto">
-                    Interact with the protocol's intelligence layer. Every search triggers a privacy-preserving negotiation in the Ledger.
+                    Interact with the protocol's intelligence layer from 10 different perspectives. Every persona brings unique insights.
                 </p>
                 <p className="text-green-400 text-sm mt-2">
                     🔒 Your questions and chat history stay on this device; nothing is sent to any server. (Generic queries may use Wikipedia to fetch public knowledge.)
                 </p>
+                <div className="mt-4 p-4 bg-gray-800/50 rounded-lg border border-gray-700 inline-block">
+                    <p className="text-sm text-gray-300">
+                        <strong className="text-white">Active Persona:</strong> <span className={`font-bold bg-gradient-to-r ${PERSONA_COLORS[persona]} bg-clip-text text-transparent`}>{persona}</span>
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">{PERSONA_DESCRIPTIONS[persona]}</p>
+                </div>
             </div>
 
-            <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6">
                 {/* Persona Sidebar */}
                 <div className="lg:col-span-1 space-y-4">
-                    <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
-                        <label className="text-[10px] uppercase font-bold text-gray-500 tracking-widest mb-3 block">Assistant Persona</label>
-                        <div className="space-y-2">
-                            {(['Architect', 'Citizen', 'Skeptic'] as PersonaMode[]).map(mode => (
-                                <button
-                                    key={mode}
-                                    onClick={() => handlePersonaChange(mode)}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all border ${persona === mode ? `${themeClasses.border} ${themeClasses.text} bg-gray-700` : 'border-transparent text-gray-400 hover:bg-gray-700/50'}`}
-                                >
-                                    {mode}
-                                </button>
+                    <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 sticky top-4">
+                        <label className="text-[10px] uppercase font-bold text-gray-500 tracking-widest mb-3 block">Select Persona</label>
+                        <div className="space-y-2 max-h-[500px] overflow-y-auto">
+                            {(['Architect', 'Citizen', 'Skeptic', 'Mentor', 'Hacker', 'Poet', 'Analyst', 'Diplomat', 'Detective', 'Oracle'] as PersonaMode[]).map(mode => (
+                                <div key={mode} className="space-y-1">
+                                    <button
+                                        onClick={() => handlePersonaChange(mode)}
+                                        className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all border font-semibold ${
+                                            persona === mode 
+                                                ? `bg-gradient-to-r ${PERSONA_COLORS[mode]} text-white border-none shadow-lg` 
+                                                : 'border-gray-600 text-gray-300 hover:bg-gray-700/50 hover:border-gray-500'
+                                        }`}
+                                    >
+                                        {mode}
+                                    </button>
+                                    {persona === mode && (
+                                        <p className="text-[11px] text-gray-400 px-3 italic">{PERSONA_DESCRIPTIONS[mode]}</p>
+                                    )}
+                                </div>
                             ))}
                         </div>
                     </div>
                 </div>
 
                 {/* Chat Area */}
-                <div className="lg:col-span-3 bg-gray-800/30 border border-gray-700 rounded-xl flex flex-col h-[500px]">
+                <div className="lg:col-span-4 bg-gray-800/30 border border-gray-700 rounded-xl flex flex-col h-[600px] flex-shrink-0">
                     <div className="flex-grow overflow-y-auto p-4 space-y-4">
                         {history.map((msg, index) => (
                             <div key={index} className={`flex items-start gap-3 ${msg.by === 'user' ? 'justify-end' : 'justify-start'}`}>
