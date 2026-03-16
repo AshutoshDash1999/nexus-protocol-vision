@@ -107,51 +107,51 @@ const RealTimeSovereignPersona: React.FC<RealTimeSovereignPersonaProps> = ({ cla
         setIsInitialized(true);
 
         // Start real-time monitoring
-        startRealTimeMonitoring(sovereignPersona);
+        const interactionInterval = setInterval(async () => {
+          try {
+            const interactions = [
+              { type: 'learning', content: 'Studying federated learning algorithms', context: 'professional-development' },
+              { type: 'work', content: 'Implementing privacy-preserving features', context: 'project-work' },
+              { type: 'research', content: 'Reading about carbon-aware AI', context: 'sustainability-research' }
+            ];
+
+            const randomInteraction = interactions[Math.floor(Math.random() * interactions.length)];
+            
+            // Process the interaction through the real Sovereign Persona
+            const result = await sovereignPersona.processInteraction(randomInteraction);
+            
+            // Update UI state
+            setActiveInteractions(prev => prev + 1);
+            setRecentInteractions(prev => [randomInteraction.content, ...prev.slice(0, 4)]);
+            
+            // Update knowledge based on processing result
+            if (result.processed && result.knowledgeGained.length > 0) {
+              setCurrentKnowledge(prev => prev + result.knowledgeGained.length);
+            }
+
+            // Update ethical score based on boundary compliance
+            if (result.privacyPreserved) {
+              setEthicalScore(prev => Math.min(100, prev + 1));
+            }
+
+          } catch (error) {
+            console.error('Error in real-time monitoring:', error);
+          }
+        }, 3000); // Update every 3 seconds
+
+        return () => clearInterval(interactionInterval);
       } catch (error) {
         console.error('Failed to initialize Sovereign Persona:', error);
       }
     };
 
-    initializePersona();
-  }, []);
-
-  const startRealTimeMonitoring = (personaInstance: MockSovereignPersona) => {
-    // Simulate real-time interactions
-    const interactionInterval = setInterval(async () => {
-      try {
-        const interactions = [
-          { type: 'learning', content: 'Studying federated learning algorithms', context: 'professional-development' },
-          { type: 'work', content: 'Implementing privacy-preserving features', context: 'project-work' },
-          { type: 'research', content: 'Reading about carbon-aware AI', context: 'sustainability-research' }
-        ];
-
-        const randomInteraction = interactions[Math.floor(Math.random() * interactions.length)];
-        
-        // Process the interaction through the real Sovereign Persona
-        const result = await personaInstance.processInteraction(randomInteraction);
-        
-        // Update UI state
-        setActiveInteractions(prev => prev + 1);
-        setRecentInteractions(prev => [randomInteraction.content, ...prev.slice(0, 4)]);
-        
-        // Update knowledge based on processing result
-        if (result.processed && result.knowledgeGained.length > 0) {
-          setCurrentKnowledge(prev => prev + result.knowledgeGained.length);
-        }
-
-        // Update ethical score based on boundary compliance
-        if (result.privacyPreserved) {
-          setEthicalScore(prev => Math.min(100, prev + 1));
-        }
-
-      } catch (error) {
-        console.error('Error in real-time monitoring:', error);
+    const cleanup = initializePersona();
+    return () => {
+      if (cleanup instanceof Function) {
+        cleanup();
       }
-    }, 3000); // Update every 3 seconds
-
-    return () => clearInterval(interactionInterval);
-  };
+    };
+  }, []);
 
   const handleManualInteraction = async () => {
     if (!persona) return;

@@ -1,6 +1,21 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Shield, Lock, Key, Users, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useDiagnosticLogs } from '../contexts/DiagnosticLogContext';
+
+interface Negotiation {
+  id: string;
+  agentId: string;
+  agentName: string;
+  requestType: string;
+  dataType: string;
+  purpose: string;
+  status: 'pending' | 'negotiating' | 'approved' | 'rejected';
+  privacyGuarantees: string[];
+  riskScore: number;
+  timestamp: Date;
+  mpcProgress: number;
+  zkpProgress: number;
+}
 
 interface RealTimePrivacyNegotiatorProps {
   className?: string;
@@ -27,7 +42,7 @@ const RealTimePrivacyNegotiator: React.FC<RealTimePrivacyNegotiatorProps> = ({ c
         timestamp: new Date(),
         mpcProgress: log.type === 'MPC' ? 100 : 0,
         zkpProgress: log.type === 'ZKP' ? 100 : 0,
-      }));
+      })) as Negotiation[];
   }, [logs]);
 
   const stats = useMemo(() => {
@@ -42,118 +57,6 @@ const RealTimePrivacyNegotiator: React.FC<RealTimePrivacyNegotiatorProps> = ({ c
       activeNegotiations: active
     };
   }, [negotiations]);
-
-  // Initialize with sample negotiations
-  useEffect(() => {
-    const initialNegotiations: Negotiation[] = [
-      {
-        id: '1',
-        agentId: 'research-lab-001',
-        agentName: 'AI Research Lab',
-        requestType: 'model-training',
-        dataType: 'anonymized-interactions',
-        purpose: 'academic-research',
-        status: 'pending',
-        privacyGuarantees: ['differential-privacy', 'data-anonymization'],
-        riskScore: 0.3,
-        timestamp: new Date(),
-        mpcProgress: 0,
-        zkpProgress: 0
-      },
-      {
-        id: '2',
-        agentId: 'health-system-002',
-        agentName: 'Healthcare System',
-        requestType: 'diagnostic-analysis',
-        dataType: 'health-metrics',
-        purpose: 'patient-care',
-        status: 'negotiating',
-        privacyGuarantees: ['hipaa-compliance', 'encrypted-storage'],
-        riskScore: 0.7,
-        timestamp: new Date(),
-        mpcProgress: 45,
-        zkpProgress: 30
-      }
-    ];
-
-    setNegotiations(initialNegotiations);
-  }, []);
-
-  // Real-time negotiation processing
-  useEffect(() => {
-    const processNegotiations = () => {
-      setNegotiations(prevNegotiations => {
-        const updated = prevNegotiations.map(neg => {
-          let updatedNeg = { ...neg };
-
-          // Process pending negotiations
-          if (neg.status === 'pending') {
-            updatedNeg.status = 'negotiating';
-            updatedNeg.timestamp = new Date();
-          }
-
-          // Update progress for negotiating items
-          if (neg.status === 'negotiating') {
-            updatedNeg.mpcProgress = Math.min(100, neg.mpcProgress + Math.random() * 20);
-            updatedNeg.zkpProgress = Math.min(100, neg.zkpProgress + Math.random() * 15);
-
-            // Complete negotiation when both processes reach 100%
-            if (updatedNeg.mpcProgress >= 100 && updatedNeg.zkpProgress >= 100) {
-              // Decision based on risk score and privacy guarantees
-              const approved = neg.riskScore < 0.6 && neg.privacyGuarantees.length >= 2;
-              updatedNeg.status = approved ? 'approved' : 'rejected';
-              updatedNeg.timestamp = new Date();
-            }
-          }
-
-          return updatedNeg;
-        });
-
-        // Remove old completed negotiations
-        const filtered = updated.filter(neg => {
-          const age = Date.now() - neg.timestamp.getTime();
-          return age < 30000; // Keep for 30 seconds after completion
-        });
-
-        // Add new negotiations occasionally
-        if (Math.random() < 0.1 && filtered.length < 5) {
-          const agents = [
-            { id: 'fintech-003', name: 'FinTech Company', type: 'fraud-detection', data: 'transaction-patterns', purpose: 'security' },
-            { id: 'smart-city-004', name: 'Smart City Platform', type: 'traffic-analysis', data: 'movement-data', purpose: 'urban-planning' },
-            { id: 'edu-platform-005', name: 'Education Platform', type: 'learning-analytics', data: 'performance-metrics', purpose: 'personalization' }
-          ];
-
-          const randomAgent = agents[Math.floor(Math.random() * agents.length)];
-          const newNeg: Negotiation = {
-            id: Date.now().toString(),
-            agentId: randomAgent.id,
-            agentName: randomAgent.name,
-            requestType: randomAgent.type,
-            dataType: randomAgent.data,
-            purpose: randomAgent.purpose,
-            status: 'pending',
-            privacyGuarantees: [
-              'data-anonymization',
-              'encrypted-transmission',
-              'access-logs',
-              'retention-limits'
-            ].slice(0, Math.floor(Math.random() * 3) + 1),
-            riskScore: Math.random() * 0.8 + 0.1,
-            timestamp: new Date(),
-            mpcProgress: 0,
-            zkpProgress: 0
-          };
-
-          filtered.push(newNeg);
-        }
-
-        return filtered;
-      });
-    };
-
-    const interval = setInterval(processNegotiations, 1500);
-    return () => clearInterval(interval);
-  }, []);
 
 
   const getStatusIcon = (status: string) => {
