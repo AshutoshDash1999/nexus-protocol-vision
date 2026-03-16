@@ -39,84 +39,118 @@ const RealTimeCognitiveGraph: React.FC<RealTimeCognitiveGraphProps> = ({ classNa
     domains: {} as Record<string, number>
   });
 
-  // Initialize cognitive graph from real metrics
+  // Initialize cognitive graph with meaningful concepts
   useEffect(() => {
-    const baseNodes = Math.max(5, Math.min(20, Math.round(metrics.activeUsers / 2 + metrics.cpuLoadPercent / 10)));
-    const baseEdges = Math.round(baseNodes * 1.5);
+    const conceptLabels = {
+      technical: ['Neural Networks', 'ZKP', 'MPC', 'Federated Learning', 'Model Compression', 'Optimization', 'Inference'],
+      ethical: ['Privacy', 'Accountability', 'Fairness', 'Transparency', 'Consent', 'Autonomy'],
+      environmental: ['Energy', 'Carbon', 'Efficiency', 'Sustainability', 'Optimization', 'Green AI']
+    };
+
+    const baseNodes = Math.max(8, Math.min(20, Math.round(metrics.activeUsers / 2 + metrics.cpuLoadPercent / 10)));
 
     const generatedNodes: Node[] = Array.from({ length: baseNodes }, (_, idx) => {
-      const domain = ['technical', 'ethical', 'environmental'][idx % 3];
+      const domain = ['technical', 'ethical', 'environmental'][idx % 3] as 'technical' | 'ethical' | 'environmental';
+      const labels = conceptLabels[domain];
+      const label = labels[idx % labels.length];
+      
       return {
-        id: `${metrics.uptimeSeconds}-${idx}`,
-        label: domain === 'technical' ? `Tech Node ${idx + 1}` : domain === 'ethical' ? `Ethics Node ${idx + 1}` : `Env Node ${idx + 1}`,
-        x: 100 + (idx % 5) * 80,
-        y: 100 + Math.floor(idx / 5) * 80,
+        id: `concept-${domain}-${idx}`,
+        label: label,
+        x: 80 + (idx % 5) * 90,
+        y: 80 + Math.floor(idx / 5) * 100,
         vx: 0,
         vy: 0,
-        confidence: 0.6 + (metrics.energySavingsPercent / 200),
+        confidence: 0.5 + (metrics.energySavingsPercent / 250) + Math.random() * 0.2,
         domain,
-        lastAccessed: Date.now() - Math.random() * 20000
+        lastAccessed: Date.now() - Math.random() * 15000
       };
     });
 
-    const generatedEdges: Edge[] = Array.from({ length: baseEdges }, (_, idx) => ({
-      source: generatedNodes[idx % generatedNodes.length].id,
-      target: generatedNodes[(idx + 1) % generatedNodes.length].id,
-      strength: 0.4 + Math.random() * 0.6,
-      type: 'relation'
-    }));
+    // Create meaningful connections based on concept relationships
+    const generatedEdges: Edge[] = [];
+    for (let i = 0; i < generatedNodes.length; i++) {
+      for (let j = i + 1; j < generatedNodes.length; j++) {
+        // Create more connections within domains
+        const sameDomain = generatedNodes[i].domain === generatedNodes[j].domain;
+        const connectionProbability = sameDomain ? 0.6 : 0.2;
+        
+        if (Math.random() < connectionProbability) {
+          generatedEdges.push({
+            source: generatedNodes[i].id,
+            target: generatedNodes[j].id,
+            strength: sameDomain ? 0.6 + Math.random() * 0.4 : 0.2 + Math.random() * 0.3,
+            type: sameDomain ? 'strong' : 'weak'
+          });
+        }
+      }
+    }
 
     setNodes(generatedNodes);
     setEdges(generatedEdges);
   }, [metrics]);
 
-  // Real-time updates
+  // Real-time learning simulation - meaningful updates
   useEffect(() => {
     const updateGraph = () => {
       setNodes(prevNodes => {
         const updatedNodes = [...prevNodes];
         
-        // Simulate real-time learning
-        if (Math.random() < 0.1) {
-          // Add new node occasionally
+        // Strengthen nodes that are being accessed (active learning)
+        updatedNodes.forEach(node => {
+          if (Math.random() < 0.3) {
+            node.confidence = Math.min(1, node.confidence + (Math.random() - 0.3) * 0.08);
+            node.lastAccessed = Date.now();
+          } else {
+            // Slight decay for unused knowledge
+            node.confidence = Math.max(0.3, node.confidence - (Math.random() * 0.02));
+          }
+        });
+
+        // Add new learned concepts occasionally
+        if (Math.random() < 0.08 && updatedNodes.length < 25) {
+          const conceptLabels = {
+            technical: ['Attention Mechanisms', 'Transformer Architecture', 'Embeddings', 'Backpropagation', 'Loss Functions'],
+            ethical: ['Bias Detection', 'Interpretability', 'Consent Validation', 'Audit Trails'],
+            environmental: ['Power Efficiency', 'Model Distillation', 'Quantization', 'Edge Computing']
+          };
+          
+          const randomDomain = ['technical', 'ethical', 'environmental'][Math.floor(Math.random() * 3)] as 'technical' | 'ethical' | 'environmental';
+          const labels = conceptLabels[randomDomain];
+          const newConcept = labels[Math.floor(Math.random() * labels.length)];
+
           const newNode: Node = {
-            id: Date.now().toString(),
-            label: ['AI Safety', 'Quantum Computing', 'Blockchain', 'Climate Tech'][Math.floor(Math.random() * 4)],
+            id: `learned-${Date.now()}`,
+            label: newConcept,
             x: Math.random() * 400 + 50,
-            y: Math.random() * 300 + 50,
-            vx: (Math.random() - 0.5) * 2,
-            vy: (Math.random() - 0.5) * 2,
-            confidence: Math.random() * 0.5 + 0.5,
-            domain: ['technical', 'ethical', 'environmental'][Math.floor(Math.random() * 3)],
+            y: Math.random() * 350 + 30,
+            vx: (Math.random() - 0.5) * 1,
+            vy: (Math.random() - 0.5) * 1,
+            confidence: 0.4 + Math.random() * 0.3,
+            domain: randomDomain,
             lastAccessed: Date.now()
           };
           
-          if (updatedNodes.length < 15) {
-            updatedNodes.push(newNode);
-            
-            // Add random connections
-            if (Math.random() < 0.7) {
-              const randomTarget = updatedNodes[Math.floor(Math.random() * (updatedNodes.length - 1))];
-              setEdges(prevEdges => [...prevEdges, {
-                source: newNode.id,
-                target: randomTarget.id,
-                strength: Math.random() * 0.5 + 0.5,
-                type: 'learning'
-              }]);
-            }
+          updatedNodes.push(newNode);
+
+          // Automatically create relationships with related concepts
+          const relatedNodes = updatedNodes.filter(n => n.domain === randomDomain && n.id !== newNode.id);
+          if (relatedNodes.length > 0) {
+            const targetNode = relatedNodes[Math.floor(Math.random() * relatedNodes.length)];
+            setEdges(prevEdges => [...prevEdges, {
+              source: newNode.id,
+              target: targetNode.id,
+              strength: 0.6 + Math.random() * 0.3,
+              type: 'learned'
+            }]);
           }
         }
 
-        // Update existing nodes
-        return updatedNodes.map(node => ({
-          ...node,
-          confidence: Math.min(1, node.confidence + (Math.random() - 0.5) * 0.1),
-          lastAccessed: Math.random() < 0.3 ? Date.now() : node.lastAccessed
-        }));
+        return updatedNodes;
       });
     };
 
-    const interval = setInterval(updateGraph, 2000);
+    const interval = setInterval(updateGraph, 1500);
     return () => clearInterval(interval);
   }, []);
 
@@ -201,7 +235,7 @@ const RealTimeCognitiveGraph: React.FC<RealTimeCognitiveGraphProps> = ({ classNa
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw edges
+      // Draw edges with better visualization
       edges.forEach(edge => {
         const sourceNode = nodes.find(n => n.id === edge.source);
         const targetNode = nodes.find(n => n.id === edge.target);
@@ -210,47 +244,71 @@ const RealTimeCognitiveGraph: React.FC<RealTimeCognitiveGraphProps> = ({ classNa
           ctx.beginPath();
           ctx.moveTo(sourceNode.x, sourceNode.y);
           ctx.lineTo(targetNode.x, targetNode.y);
-          ctx.strokeStyle = `rgba(59, 130, 246, ${edge.strength})`;
-          ctx.lineWidth = edge.strength * 3;
+          
+          // Color based on connection strength and type
+          const isLearned = edge.type === 'learned';
+          const baseAlpha = edge.strength * (isLearned ? 0.8 : 0.5);
+          ctx.strokeStyle = isLearned 
+            ? `rgba(34, 197, 94, ${baseAlpha})` 
+            : `rgba(59, 130, 246, ${edge.strength * 0.6})`;
+          
+          ctx.lineWidth = edge.strength * 2 + (isLearned ? 0.5 : 0);
           ctx.stroke();
         }
       });
 
-      // Draw nodes
+      // Draw nodes with better visual hierarchy
       nodes.forEach(node => {
         const isSelected = selectedNode?.id === node.id;
-        const isRecentlyAccessed = Date.now() - node.lastAccessed < 5000;
+        const isRecentlyAccessed = Date.now() - node.lastAccessed < 4000;
         
-        // Node circle
+        // Node circle with size based on confidence
+        const nodeRadius = 8 + node.confidence * 8;
         ctx.beginPath();
-        ctx.arc(node.x, node.y, 10 + node.confidence * 10, 0, Math.PI * 2);
+        ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
         
         // Color based on domain
         const colors = {
-          technical: '59, 130, 246',
-          ethical: '239, 68, 68',
-          environmental: '34, 197, 94'
+          technical: '59, 130, 246',      // blue
+          ethical: '239, 68, 68',         // red  
+          environmental: '34, 197, 94'    // green
         };
         const color = colors[node.domain as keyof typeof colors] || '156, 163, 175';
         
-        ctx.fillStyle = `rgba(${color}, ${node.confidence})`;
+        // Fill with solid color
+        ctx.fillStyle = `rgba(${color}, ${node.confidence * 0.8 + 0.2})`;
         ctx.fill();
         
+        // Selection ring
         if (isSelected) {
           ctx.strokeStyle = 'rgba(251, 191, 36, 1)';
           ctx.lineWidth = 3;
           ctx.stroke();
         } else if (isRecentlyAccessed) {
-          ctx.strokeStyle = 'rgba(34, 197, 94, 1)';
+          // Active learning indicator
+          ctx.strokeStyle = 'rgba(34, 197, 94, 0.8)';
           ctx.lineWidth = 2;
+          ctx.stroke();
+        } else {
+          // Normal border
+          ctx.strokeStyle = `rgba(${color}, 0.5)`;
+          ctx.lineWidth = 1;
           ctx.stroke();
         }
 
-        // Node label
+        // Node label with better positioning
         ctx.fillStyle = 'white';
-        ctx.font = '10px sans-serif';
+        ctx.font = 'bold 9px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(node.label, node.x, node.y - 20);
+        ctx.textBaseline = 'middle';
+        const maxWidth = 60;
+        const text = node.label.length > 12 ? node.label.substring(0, 12) + '.' : node.label;
+        ctx.fillText(text, node.x, node.y - nodeRadius - 8);
+
+        // Confidence indicator
+        ctx.fillStyle = `rgba(${color}, 0.6)`;
+        ctx.font = '7px monospace';
+        ctx.fillText(`${Math.round(node.confidence * 100)}%`, node.x, node.y + nodeRadius + 6);
       });
     };
 
@@ -305,51 +363,92 @@ const RealTimeCognitiveGraph: React.FC<RealTimeCognitiveGraphProps> = ({ classNa
         </div>
 
         <div className="space-y-4">
-          <div className="bg-gray-700 p-4 rounded-lg">
-            <h4 className="text-sm font-semibold text-gray-300 mb-3 flex items-center space-x-2">
+          <div className="bg-gradient-to-br from-blue-900/30 to-transparent border border-blue-700 p-4 rounded-lg">
+            <h4 className="text-sm font-semibold text-blue-300 mb-3 flex items-center space-x-2">
               <Network className="w-4 h-4" />
-              <span>Graph Statistics</span>
+              <span>Knowledge Graph</span>
             </h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Total Nodes:</span>
-                <span className="text-white font-bold">{stats.totalNodes}</span>
+            <div className="space-y-3 text-sm">
+              <div>
+                <div className="flex justify-between text-xs text-gray-400 mb-1">
+                  <span>Concepts Learned:</span>
+                  <span className="text-blue-300 font-bold">{stats.totalNodes}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Total Edges:</span>
-                <span className="text-white font-bold">{stats.totalEdges}</span>
+              <div>
+                <div className="flex justify-between text-xs text-gray-400 mb-1">
+                  <span>Connections:</span>
+                  <span className="text-blue-300 font-bold">{stats.totalEdges}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Avg Confidence:</span>
-                <span className="text-white font-bold">{(stats.avgConfidence * 100).toFixed(1)}%</span>
+              <div>
+                <div className="flex justify-between text-xs text-gray-400 mb-1">
+                  <span>Knowledge Confidence:</span>
+                  <span className="text-green-300 font-bold">{(stats.avgConfidence * 100).toFixed(0)}%</span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-green-500 to-cyan-500 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${stats.avgConfidence * 100}%` }}
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-700 p-4 rounded-lg">
-            <h4 className="text-sm font-semibold text-gray-300 mb-3">Domain Distribution</h4>
+          <div className="bg-gradient-to-br from-purple-900/30 to-transparent border border-purple-700 p-4 rounded-lg">
+            <h4 className="text-sm font-semibold text-purple-300 mb-3">Learning by Domain</h4>
             <div className="space-y-2">
-              {Object.entries(stats.domains).map(([domain, count]) => (
-                <div key={domain} className="flex justify-between text-sm">
-                  <span className="text-gray-400 capitalize">{domain}:</span>
-                  <span className="text-white font-bold">{count}</span>
-                </div>
-              ))}
+              {Object.entries({
+                technical: '59, 130, 246',
+                ethical: '239, 68, 68',
+                environmental: '34, 197, 94'
+              }).map(([domain, color]) => {
+                const count = stats.domains[domain] || 0;
+                const total = stats.totalNodes || 1;
+                const percent = Math.round((count / total) * 100);
+                return (
+                  <div key={domain} className="text-xs">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-gray-400 capitalize">{domain}</span>
+                      <span className="text-white font-bold">{count}</span>
+                    </div>
+                    <div className="w-full bg-gray-700/50 rounded-full h-1.5">
+                      <div 
+                        className="h-1.5 rounded-full transition-all duration-300"
+                        style={{ width: `${percent}%`, backgroundColor: `rgb(${color})` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           {selectedNode && (
-            <div className="bg-gray-700 p-4 rounded-lg">
-              <h4 className="text-sm font-semibold text-gray-300 mb-3 flex items-center space-x-2">
+            <div className="bg-gradient-to-br from-yellow-900/30 to-transparent border border-yellow-700 p-4 rounded-lg">
+              <h4 className="text-sm font-semibold text-yellow-300 mb-3 flex items-center space-x-2">
                 <Eye className="w-4 h-4" />
-                <span>Selected Node</span>
+                <span>Inspecting Concept</span>
               </h4>
-              <div className="space-y-2 text-sm">
-                <div className="text-white font-bold">{selectedNode.label}</div>
-                <div className="text-gray-400">Domain: {selectedNode.domain}</div>
-                <div className="text-gray-400">Confidence: {(selectedNode.confidence * 100).toFixed(1)}%</div>
-                <div className="text-gray-400">
-                  Last accessed: {new Date(selectedNode.lastAccessed).toLocaleTimeString()}
+              <div className="space-y-2 text-xs">
+                <div className="text-white font-bold text-sm">{selectedNode.label}</div>
+                <div className="flex justify-between text-gray-400">
+                  <span>Domain:</span>
+                  <span className="text-gray-300 capitalize">{selectedNode.domain}</span>
+                </div>
+                <div className="flex justify-between text-gray-400 mb-2">
+                  <span>Confidence:</span>
+                  <span className="text-gray-300 font-bold">{(selectedNode.confidence * 100).toFixed(0)}%</span>
+                </div>
+                <div className="w-full bg-gray-700/50 rounded-full h-1.5">
+                  <div 
+                    className="bg-yellow-400 h-1.5 rounded-full"
+                    style={{ width: `${selectedNode.confidence * 100}%` }}
+                  />
+                </div>
+                <div className="text-gray-500 text-[10px] mt-2">
+                  Active: {new Date(selectedNode.lastAccessed).toLocaleTimeString()}
                 </div>
               </div>
             </div>
@@ -357,15 +456,17 @@ const RealTimeCognitiveGraph: React.FC<RealTimeCognitiveGraphProps> = ({ classNa
         </div>
       </div>
 
-      <div className="flex items-center justify-between bg-gray-700 p-3 rounded-lg">
+      <div className="flex items-center justify-between bg-gradient-to-r from-gray-700/40 to-gray-700/20 border border-gray-700 p-3 rounded-lg">
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="text-sm text-gray-300">Graph Active</span>
+          <span className="text-sm text-gray-300">Active Learning</span>
         </div>
-        <div className="flex items-center space-x-4 text-xs text-gray-400">
-          <span>Click nodes to inspect</span>
+        <div className="flex items-center space-x-3 text-xs text-gray-400">
+          <span>📊 {stats.totalNodes} concepts</span>
           <span>•</span>
-          <span>Real-time learning enabled</span>
+          <span>🔗 {stats.totalEdges} connections</span>
+          <span>•</span>
+          <span>Click nodes to explore</span>
         </div>
       </div>
     </div>
