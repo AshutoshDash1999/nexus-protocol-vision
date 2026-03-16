@@ -1,233 +1,122 @@
-
 import React from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FEATURES } from './constants';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import FeatureCard from './components/FeatureCard';
-import AskNexus from './components/AskNexus';
-import VisualizeConcept from './components/VisualizeConcept';
-import DynamicOptimizationGraph from './components/DynamicOptimizationGraph';
-import ScenarioGenerator from './components/ScenarioGenerator';
-import ConcludingVision from './components/ConcludingVision';
-import DiveDeeper from './components/DiveDeeper';
-import AnimatedSection from './components/AnimatedSection';
-import ScrollToTopButton from './components/ScrollToTopButton';
-import Preloader from './components/Preloader';
-import FloatingNav from './components/FloatingNav';
-import ConfirmationModal from './components/ConfirmationModal';
-import { useToast } from './contexts/ToastContext';
-import GlobalReset from './components/GlobalReset';
-import { useErrorState } from './contexts/ErrorStateContext';
-import ProtocolDiagnostics from './components/ProtocolDiagnostics';
-import NexusReport from './components/NexusReport';
-import RealTimeSovereignPersona from './components/RealTimeSovereignPersona';
-import RealTimeSystemMetrics from './components/RealTimeSystemMetrics';
-import RealTimeCognitiveGraph from './components/RealTimeCognitiveGraph';
-import RealTimePrivacyNegotiator from './components/RealTimePrivacyNegotiator';
-import RealTimeCarbonAware from './components/RealTimeCarbonAware';
 
-const gridContainerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
+// Contexts
+import { ThemeProvider } from './contexts/ThemeContext';
+import { ToastProvider } from './contexts/ToastContext';
+import { GraphComplexityProvider } from './contexts/GraphComplexityContext';
+import { ErrorStateProvider } from './contexts/ErrorStateContext';
+import { DiagnosticLogProvider } from './contexts/DiagnosticLogContext';
+import { RealTimeProvider } from './contexts/RealTimeContext';
+import ErrorBoundary from './components/ErrorBoundary';
 
-const gridItemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: { duration: 0.5, ease: 'easeOut' },
-  },
-};
+// Pages
+import HomePage from './pages/HomePage';
+import SovereignPersonaPage from './pages/SovereignPersonaPage';
+import CognitiveGraphPage from './pages/CognitiveGraphPage';
+import PrivacyNegotiatorPage from './pages/PrivacyNegotiatorPage';
+import CarbonAwarePage from './pages/CarbonAwarePage';
 
-const navItems = [
-    { name: 'Explore', link: '#explore' },
-    { name: 'Concepts', link: '#concepts' },
-    { name: 'Real-Time', link: '#realtime' },
-    { name: 'Diagnostics', link: '#diagnostics' },
-    { name: 'Visualize', link: '#visualize' },
-    { name: 'Scenarios', link: '#scenarios' },
-    { name: 'Report', link: '#report' },
-];
+// Navigation Menu Component
+const Navigation: React.FC = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
 
-const sectionIds = navItems.map(item => item.link.substring(1));
-
-
-const App: React.FC = () => {
-  const [isAppLoading, setIsAppLoading] = React.useState(true);
-  const [isResetModalOpen, setIsResetModalOpen] = React.useState(false);
-  const { showToast } = useToast();
-  const { setHasComponentError } = useErrorState();
-
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsAppLoading(false);
-    }, 2000); // Simulate asset loading
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleRequestReset = () => {
-    setIsResetModalOpen(true);
-  };
-  
-  const handleConfirmReset = () => {
-    try {
-      const keysToRemove = [
-          'nexus-chat-history',
-          'visualize-concept',
-          'visualize-prompt',
-          'visualize-image-url',
-          'visualize-model-config',
-          'scenario-domain',
-          'scenario-text',
-          'scenario-model-config',
-          'nexus-theme'
-      ];
-      keysToRemove.forEach(key => localStorage.removeItem(key));
-      setHasComponentError(false);
-      setIsResetModalOpen(false);
-      // Brief delay to allow modal to animate out before the jarring reload
-      setTimeout(() => window.location.reload(), 300);
-    } catch (error) {
-      console.error("Failed to reset application state:", error);
-      setIsResetModalOpen(false);
-      showToast("Error: Could not reset application state.");
-    }
-  };
-
+  const menuItems = [
+    { name: 'Home', path: '/' },
+    { name: 'Sovereign Persona', path: '/sovereign-persona' },
+    { name: 'Cognitive Graph', path: '/cognitive-graph' },
+    { name: 'Privacy Negotiator', path: '/privacy-negotiator' },
+    { name: 'Carbon Aware', path: '/carbon-aware' },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-200 font-sans antialiased">
-      <AnimatePresence>
-        {isAppLoading && <Preloader />}
-      </AnimatePresence>
-      
-      {!isAppLoading && (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-        >
-            <div className="absolute top-0 left-0 w-full h-full bg-grid-gray-700/[0.2] [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-            <div className="relative z-10">
-                <Header />
-                <FloatingNav navItems={navItems} sectionIds={sectionIds} />
-                <main className="container mx-auto px-4 py-12 md:py-20 space-y-16 md:space-y-24">
-                <AnimatedSection>
-                    <Hero />
-                </AnimatedSection>
-                <AnimatedSection id="explore">
-                    <AskNexus />
-                </AnimatedSection>
-                
-                <AnimatedSection id="concepts">
-                    <motion.div 
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                    variants={gridContainerVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.1 }}
-                    >
-                    {FEATURES.map((feature, index) => (
-                        <motion.div 
-                          key={index} 
-                          variants={gridItemVariants}
-                          whileHover={{ scale: 1.03, y: -5 }}
-                          transition={{ type: 'spring', stiffness: 300 }}
-                        >
-                        <FeatureCard
-                            icon={feature.icon}
-                            title={feature.title}
-                            description={feature.description}
-                            details={feature.details}
-                        />
-                        </motion.div>
-                    ))}
-                    </motion.div>
-                </AnimatedSection>
+    <nav className="bg-gray-900 border-b border-gray-700 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2 group">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg group-hover:shadow-lg transition-all" />
+            <span className="text-white font-bold text-lg hidden sm:inline">Nexus Protocol</span>
+          </Link>
 
-                <AnimatedSection id="realtime">
-                    <div className="space-y-8">
-                        <div className="text-center">
-                            <h2 className="text-3xl font-bold text-white mb-4">Real-Time Core Systems</h2>
-                            <p className="text-gray-300 max-w-2xl mx-auto">
-                                Experience the Nexus Protocol core systems operating in real-time with live data processing, 
-                                privacy negotiations, cognitive graph updates, and carbon-aware optimization.
-                            </p>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <RealTimeSovereignPersona />
-                            <RealTimeSystemMetrics />
-                        </div>
-                        
-                        <RealTimeCognitiveGraph />
-                        
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <RealTimePrivacyNegotiator />
-                            <RealTimeCarbonAware />
-                        </div>
-                    </div>
-                </AnimatedSection>
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-1">
+            {menuItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-700 transition-colors"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
 
-                <AnimatedSection id="diagnostics">
-                    <ProtocolDiagnostics />
-                </AnimatedSection>
-                
-                <AnimatedSection id="visualize">
-                    <VisualizeConcept />
-                </AnimatedSection>
-                <AnimatedSection id="scenarios">
-                    <ScenarioGenerator />
-                </AnimatedSection>
-                <AnimatedSection id="optimize">
-                    <DynamicOptimizationGraph />
-                </AnimatedSection>
-                <AnimatedSection id="report">
-                    <NexusReport />
-                </AnimatedSection>
-                <AnimatedSection>
-                    <DiveDeeper />
-                </AnimatedSection>
-                <AnimatedSection>
-                    <ConcludingVision />
-                </AnimatedSection>
-                <footer className="text-center pt-8 border-t border-gray-800 text-gray-500">
-                    <p className="font-semibold">The Nexus Protocol: A Vision for Sovereign AI</p>
-                    <p className="mt-2 text-sm">This project is an open-source thought experiment.</p>
-                    <p className="text-xs mt-1">Designed to inspire the future of decentralized, agentic infrastructure.</p>
-                     <div className="mt-4">
-                        <button 
-                            onClick={handleRequestReset}
-                            className="text-xs text-gray-600 hover:text-rose-400 transition-colors"
-                        >
-                            Reset Application State
-                        </button>
-                    </div>
-                </footer>
-                </main>
-                <ScrollToTopButton />
-                <GlobalReset onReset={handleRequestReset} />
-            </div>
-            <ConfirmationModal
-                isOpen={isResetModalOpen}
-                onClose={() => setIsResetModalOpen(false)}
-                onConfirm={handleConfirmReset}
-                title="Reset Application State"
-                confirmText="Confirm Reset"
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden text-gray-300 hover:text-white"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden bg-gray-800 space-y-1 pb-3"
             >
-                Are you sure you want to reset all application data? This will permanently clear chat history, generated images, and scenarios. This action cannot be undone.
-            </ConfirmationModal>
-        </motion.div>
-      )}
-    </div>
+              {menuItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium rounded-md hover:bg-gray-700 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </nav>
+  );
+};
+
+// Main App Component
+const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <ThemeProvider>
+        <ToastProvider>
+          <GraphComplexityProvider>
+            <ErrorStateProvider>
+              <DiagnosticLogProvider>
+                <RealTimeProvider>
+                  <ErrorBoundary>
+                    <Navigation />
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/sovereign-persona" element={<SovereignPersonaPage />} />
+                      <Route path="/cognitive-graph" element={<CognitiveGraphPage />} />
+                      <Route path="/privacy-negotiator" element={<PrivacyNegotiatorPage />} />
+                      <Route path="/carbon-aware" element={<CarbonAwarePage />} />
+                    </Routes>
+                  </ErrorBoundary>
+                </RealTimeProvider>
+              </DiagnosticLogProvider>
+            </ErrorStateProvider>
+          </GraphComplexityProvider>
+        </ToastProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 };
 
