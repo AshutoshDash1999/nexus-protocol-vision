@@ -1,34 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Shield, Lock, Key, Users, AlertTriangle, CheckCircle } from 'lucide-react';
-
-interface Negotiation {
-  id: string;
-  agentId: string;
-  agentName: string;
-  requestType: string;
-  dataType: string;
-  purpose: string;
-  status: 'pending' | 'negotiating' | 'approved' | 'rejected';
-  privacyGuarantees: string[];
-  riskScore: number;
-  timestamp: Date;
-  mpcProgress: number;
-  zkpProgress: number;
-}
+import { useDiagnosticLogs } from '../contexts/DiagnosticLogContext';
 
 interface RealTimePrivacyNegotiatorProps {
   className?: string;
 }
 
 const RealTimePrivacyNegotiator: React.FC<RealTimePrivacyNegotiatorProps> = ({ className }) => {
-  const [negotiations, setNegotiations] = useState<Negotiation[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [stats, setStats] = useState({
-    totalNegotiations: 0,
-    approvedRate: 0,
-    avgRiskScore: 0,
-    activeNegotiations: 0
-  });
+  const { logs } = useDiagnosticLogs();
+
+  const negotiations = useMemo(() => {
+    // Convert recent SHIELD/MPC/ZKP logs into negotiation-like records
+    return logs
+      .filter(l => l.type === 'MPC' || l.type === 'ZKP' || l.type === 'SHIELD')
+      .slice(-20)
+      .map(log => ({
+        id: log.id,
+        agentId: log.type,
+        agentName: `${log.type} Module`,
+        requestType: log.type === 'SHIELD' ? 'intent-scan' : 'secure-handshake',
+        dataType: 'user-context',
+        purpose: log.message,
+        status: log.status === 'success' ? 'approved' : (log.status === 'warning' ? 'negotiating' : 'rejected'),
+        privacyGuarantees: log.type === 'SHIELD' ? ['semantic analysis', 'prompt sanitization'] : ['MPC', 'ZKP'],
+        riskScore: log.status === 'success' ? 0.2 : (log.status === 'warning' ? 0.5 : 0.8),
+        timestamp: new Date(),
+        mpcProgress: log.type === 'MPC' ? 100 : 0,
+        zkpProgress: log.type === 'ZKP' ? 100 : 0,
+      }));
+  }, [logs]);
+
+  const stats = useMemo(() => {
+    const total = negotiations.length;
+    const approved = negotiations.filter(n => n.status === 'approved').length;
+    const active = negotiations.filter(n => n.status === 'negotiating').length;
+    const avgRisk = total > 0 ? negotiations.reduce((sum, n) => sum + n.riskScore, 0) / total : 0;
+    return {
+      totalNegotiations: total,
+      approvedRate: total > 0 ? (approved / total) * 100 : 0,
+      avgRiskScore: avgRisk,
+      activeNegotiations: active
+    };
+  }, [negotiations]);
 
   // Initialize with sample negotiations
   useEffect(() => {
@@ -142,20 +155,6 @@ const RealTimePrivacyNegotiator: React.FC<RealTimePrivacyNegotiatorProps> = ({ c
     return () => clearInterval(interval);
   }, []);
 
-  // Update statistics
-  useEffect(() => {
-    const total = negotiations.length;
-    const approved = negotiations.filter(n => n.status === 'approved').length;
-    const active = negotiations.filter(n => n.status === 'negotiating').length;
-    const avgRisk = total > 0 ? negotiations.reduce((sum, n) => sum + n.riskScore, 0) / total : 0;
-
-    setStats({
-      totalNegotiations: total,
-      approvedRate: total > 0 ? (approved / total) * 100 : 0,
-      avgRiskScore: avgRisk,
-      activeNegotiations: active
-    });
-  }, [negotiations]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {

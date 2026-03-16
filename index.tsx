@@ -8,6 +8,7 @@ import { ToastProvider } from './contexts/ToastContext';
 import { GraphComplexityProvider } from './contexts/GraphComplexityContext';
 import { ErrorStateProvider } from './contexts/ErrorStateContext';
 import { DiagnosticLogProvider } from './contexts/DiagnosticLogContext';
+import { RealTimeProvider } from './contexts/RealTimeContext';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -22,9 +23,11 @@ root.render(
         <GraphComplexityProvider>
           <ErrorStateProvider>
             <DiagnosticLogProvider>
-              <ErrorBoundary>
-                <App />
-              </ErrorBoundary>
+              <RealTimeProvider>
+                <ErrorBoundary>
+                  <App />
+                </ErrorBoundary>
+              </RealTimeProvider>
             </DiagnosticLogProvider>
           </ErrorStateProvider>
         </GraphComplexityProvider>

@@ -4,17 +4,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { getThemeClasses } from '../utils/themeUtils';
 import { useGraphComplexity } from '../contexts/GraphComplexityContext';
+import { useRealTimeMetrics } from '../contexts/RealTimeContext';
 
 const DynamicOptimizationGraph: React.FC = () => {
     const { theme } = useTheme();
     const themeClasses = getThemeClasses(theme);
     const { complexity } = useGraphComplexity();
 
+    const { metrics } = useRealTimeMetrics();
+
     const stats = useMemo(() => {
-        if (complexity === 'complex') return { neurons: '1.2B', energy: 'High', efficiency: '92%', mode: 'Reasoning' };
-        if (complexity === 'simple') return { neurons: '150M', energy: 'Minimal', efficiency: '98%', mode: 'Pruned' };
-        return { neurons: '0', energy: 'Zero', efficiency: '100%', mode: 'Standby' };
-    }, [complexity]);
+        const energy = complexity === 'complex' ? 'High' : complexity === 'simple' ? 'Minimal' : 'Zero';
+        const efficiency = `${Math.min(100, Math.max(60, metrics.energySavingsPercent + (complexity === 'complex' ? -5 : 5)))}%`;
+        const neurons = complexity === 'complex' ? '1.2B' : complexity === 'simple' ? '150M' : '0';
+        const mode = complexity === 'complex' ? 'Reasoning' : complexity === 'simple' ? 'Pruned' : 'Standby';
+        return { neurons, energy, efficiency, mode };
+    }, [complexity, metrics.energySavingsPercent]);
 
     const nodePositions = [
         { top: '50%', left: '10%' },

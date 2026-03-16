@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Network, Brain, Zap, Eye } from 'lucide-react';
+import { useRealTimeMetrics } from '../contexts/RealTimeContext';
 
 interface Node {
   id: string;
@@ -26,6 +27,7 @@ interface RealTimeCognitiveGraphProps {
 
 const RealTimeCognitiveGraph: React.FC<RealTimeCognitiveGraphProps> = ({ className }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { metrics } = useRealTimeMetrics();
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [isAnimating, setIsAnimating] = useState(true);
@@ -37,29 +39,36 @@ const RealTimeCognitiveGraph: React.FC<RealTimeCognitiveGraphProps> = ({ classNa
     domains: {} as Record<string, number>
   });
 
-  // Initialize cognitive graph with sample data
+  // Initialize cognitive graph from real metrics
   useEffect(() => {
-    const initialNodes: Node[] = [
-      { id: '1', label: 'Machine Learning', x: 200, y: 150, vx: 0, vy: 0, confidence: 0.9, domain: 'technical', lastAccessed: Date.now() },
-      { id: '2', label: 'Privacy', x: 400, y: 200, vx: 0, vy: 0, confidence: 0.8, domain: 'ethical', lastAccessed: Date.now() },
-      { id: '3', label: 'Federated Learning', x: 300, y: 300, vx: 0, vy: 0, confidence: 0.7, domain: 'technical', lastAccessed: Date.now() },
-      { id: '4', label: 'Carbon Awareness', x: 150, y: 250, vx: 0, vy: 0, confidence: 0.6, domain: 'environmental', lastAccessed: Date.now() },
-      { id: '5', label: 'Neural Networks', x: 350, y: 100, vx: 0, vy: 0, confidence: 0.85, domain: 'technical', lastAccessed: Date.now() },
-      { id: '6', label: 'Data Ethics', x: 450, y: 150, vx: 0, vy: 0, confidence: 0.75, domain: 'ethical', lastAccessed: Date.now() },
-    ];
+    const baseNodes = Math.max(5, Math.min(20, Math.round(metrics.activeUsers / 2 + metrics.cpuLoadPercent / 10)));
+    const baseEdges = Math.round(baseNodes * 1.5);
 
-    const initialEdges: Edge[] = [
-      { source: '1', target: '3', strength: 0.8, type: 'prerequisite' },
-      { source: '1', target: '5', strength: 0.9, type: 'related' },
-      { source: '2', target: '6', strength: 0.7, type: 'ethical' },
-      { source: '3', target: '4', strength: 0.6, type: 'concern' },
-      { source: '5', target: '3', strength: 0.8, type: 'implementation' },
-      { source: '6', target: '3', strength: 0.5, type: 'constraint' },
-    ];
+    const generatedNodes: Node[] = Array.from({ length: baseNodes }, (_, idx) => {
+      const domain = ['technical', 'ethical', 'environmental'][idx % 3];
+      return {
+        id: `${metrics.uptimeSeconds}-${idx}`,
+        label: domain === 'technical' ? `Tech Node ${idx + 1}` : domain === 'ethical' ? `Ethics Node ${idx + 1}` : `Env Node ${idx + 1}`,
+        x: 100 + (idx % 5) * 80,
+        y: 100 + Math.floor(idx / 5) * 80,
+        vx: 0,
+        vy: 0,
+        confidence: 0.6 + (metrics.energySavingsPercent / 200),
+        domain,
+        lastAccessed: Date.now() - Math.random() * 20000
+      };
+    });
 
-    setNodes(initialNodes);
-    setEdges(initialEdges);
-  }, []);
+    const generatedEdges: Edge[] = Array.from({ length: baseEdges }, (_, idx) => ({
+      source: generatedNodes[idx % generatedNodes.length].id,
+      target: generatedNodes[(idx + 1) % generatedNodes.length].id,
+      strength: 0.4 + Math.random() * 0.6,
+      type: 'relation'
+    }));
+
+    setNodes(generatedNodes);
+    setEdges(generatedEdges);
+  }, [metrics]);
 
   // Real-time updates
   useEffect(() => {

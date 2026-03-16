@@ -5,6 +5,7 @@ import { WhitepaperIcon, CodeIcon, CommunityIcon, XCircleIcon } from './icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { getThemeClasses } from '../utils/themeUtils';
 import ProjectDetailsModal from './ProjectDetailsModal';
+import { useRealTimeMetrics } from '../contexts/RealTimeContext';
 
 export type ActionType = 'whitepaper' | 'code' | 'community' | null;
 
@@ -51,14 +52,20 @@ const gridItemVariants = {
 const DiveDeeper: React.FC = () => {
   const { theme } = useTheme();
   const themeClasses = getThemeClasses(theme);
+  const { metrics } = useRealTimeMetrics();
   const [activeAction, setActiveAction] = useState<ActionType>(null);
 
   return (
     <div>
       <h2 className="text-3xl font-bold text-white mb-4 text-center">Dive Deeper</h2>
-      <p className="text-gray-400 mb-10 max-w-2xl mx-auto text-center">
+      <p className="text-gray-400 mb-6 max-w-2xl mx-auto text-center">
         The Nexus Protocol is an open-source thought experiment. Explore the concepts further and see how you can get involved.
       </p>
+      <div className="flex items-center justify-center gap-4 mb-10">
+        <span className="text-xs text-gray-400">Live users: <span className="text-white font-semibold">{metrics.activeUsers}</span></span>
+        <span className="text-xs text-gray-400">Latency: <span className="text-white font-semibold">{metrics.latencyMs}ms</span></span>
+        <span className="text-xs text-gray-400">Energy savings: <span className="text-white font-semibold">{metrics.energySavingsPercent}%</span></span>
+      </div>
       
       <motion.div 
         className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto"
