@@ -18,6 +18,11 @@ import SovereignPersonaPage from './pages/SovereignPersonaPage';
 import CognitiveGraphPage from './pages/CognitiveGraphPage';
 import PrivacyNegotiatorPage from './pages/PrivacyNegotiatorPage';
 import CarbonAwarePage from './pages/CarbonAwarePage';
+import FederatedLearningPage from './pages/FederatedLearningPage';
+import MorphNetPage from './pages/MorphNetPage';
+import ImmuneSystemPage from './pages/ImmuneSystemPage';
+import LatentSpaceMapping from './pages/LatentSpaceMapping';
+import MonitoringAnalyticsPage from './pages/MonitoringAnalyticsPage';
 
 // Navigation Menu Component
 const Navigation: React.FC = () => {
@@ -29,6 +34,11 @@ const Navigation: React.FC = () => {
     { name: 'Cognitive Graph', path: '/cognitive-graph' },
     { name: 'Privacy Negotiator', path: '/privacy-negotiator' },
     { name: 'Carbon Aware', path: '/carbon-aware' },
+    { name: 'Federated Learning', path: '/federated-learning' },
+    { name: 'MorphNet', path: '/morphnet' },
+    { name: 'Immune System', path: '/immune-system' },
+    { name: 'Latent Space', path: '/latent-space' },
+    { name: 'Monitoring', path: '/monitoring' },
   ];
 
   return (
@@ -108,6 +118,11 @@ const App: React.FC = () => {
                       <Route path="/cognitive-graph" element={<CognitiveGraphPage />} />
                       <Route path="/privacy-negotiator" element={<PrivacyNegotiatorPage />} />
                       <Route path="/carbon-aware" element={<CarbonAwarePage />} />
+                      <Route path="/federated-learning" element={<FederatedLearningPage />} />
+                      <Route path="/morphnet" element={<MorphNetPage />} />
+                      <Route path="/immune-system" element={<ImmuneSystemPage />} />
+                      <Route path="/latent-space" element={<LatentSpaceMapping />} />
+                      <Route path="/monitoring" element={<MonitoringAnalyticsPage />} />
                     </Routes>
                   </ErrorBoundary>
                 </RealTimeProvider>

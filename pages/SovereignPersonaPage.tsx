@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Brain, Target, Shield, TrendingUp, BookOpen, Users } from 'lucide-react';
 import RealTimeSovereignPersona from '../components/RealTimeSovereignPersona';
+import AskNexus from '../components/AskNexus';
 import { useTheme } from '../contexts/ThemeContext';
 import { getThemeClasses } from '../utils/themeUtils';
 
@@ -220,6 +221,20 @@ const SovereignPersonaPage: React.FC = () => {
               </p>
             </div>
           </div>
+        </motion.div>
+
+        {/* Ask Nexus - Conversational Interface */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0 }}
+          className="space-y-6"
+        >
+          <h2 className="text-3xl font-bold text-white">Ask Your Persona</h2>
+          <p className="text-gray-300 text-lg">
+            Chat with your Sovereign Persona directly. Ask questions, get advice, and leverage its understanding of your goals and values.
+          </p>
+          <AskNexus />
         </motion.div>
       </div>
     </div>
