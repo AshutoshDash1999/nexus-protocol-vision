@@ -41,30 +41,33 @@ The Nexus Protocol consists of **nine interconnected core systems** that work to
 
 ### Prerequisites
 
-- **Node.js** 18+ 
+- **Node.js** 18+
 - **npm** or **yarn**
 - **Google Gemini API Key** (for AI features)
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Puneet04-tech/nexus-protocol-vision.git
    cd nexus-protocol-vision
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up your API key**
-   
+
    Create a `.env.local` file in the root directory:
+
    ```env
    GEMINI_API_KEY=your_gemini_api_key_here
    ```
-   
+
    To get an API key:
    - Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
    - Sign in with your Google account
@@ -72,6 +75,7 @@ The Nexus Protocol consists of **nine interconnected core systems** that work to
    - Copy and paste it into your `.env.local` file
 
 4. **Run the development server**
+
    ```bash
    npm run dev
    ```
@@ -86,42 +90,48 @@ The Nexus Protocol consists of **nine interconnected core systems** that work to
 The heart of the Nexus Protocol - your local-first digital twin.
 
 **Key Features:**
+
 - **Cognitive Graph**: Maps your knowledge, skills, and learning patterns
 - **Ethical Boundaries**: Enforces your personal values and constraints
 - **Professional Context**: Understands your career goals and expertise
 - **Privacy Preferences**: Granular control over data sharing
 
 **Usage:**
+
 ```typescript
-import { SovereignPersona } from './core/sovereign-persona/SovereignPersona';
+import { SovereignPersona } from "./core/sovereign-persona/SovereignPersona";
 
 const persona = new SovereignPersona({
-  id: 'user-123',
-  userId: 'john-doe',
-  knowledgeDomains: ['programming', 'ai', 'ethics'],
+  id: "user-123",
+  userId: "john-doe",
+  knowledgeDomains: ["programming", "ai", "ethics"],
   ethicalBoundaries: [
-    { domain: 'data-privacy', constraints: ['no-personal-data-sharing'], severity: 'critical' }
+    {
+      domain: "data-privacy",
+      constraints: ["no-personal-data-sharing"],
+      severity: "critical",
+    },
   ],
   professionalContext: {
-    role: 'Software Engineer',
-    industry: 'Technology',
-    skills: ['TypeScript', 'React', 'Machine Learning'],
-    experience: '5 years',
-    goals: ['AI Safety Research', 'Open Source Contributions']
+    role: "Software Engineer",
+    industry: "Technology",
+    skills: ["TypeScript", "React", "Machine Learning"],
+    experience: "5 years",
+    goals: ["AI Safety Research", "Open Source Contributions"],
   },
   privacyPreferences: {
     dataRetention: 30,
-    sharingLevel: 'selective',
-    anonymization: true
+    sharingLevel: "selective",
+    anonymization: true,
   },
-  carbonFootprintTarget: 100 // kg CO2 per month
+  carbonFootprintTarget: 100, // kg CO2 per month
 });
 
 // Process interactions
 const result = await persona.processInteraction({
-  type: 'learning',
-  content: 'Studying federated learning algorithms',
-  context: 'professional-development'
+  type: "learning",
+  content: "Studying federated learning algorithms",
+  context: "professional-development",
 });
 ```
 
@@ -130,35 +140,37 @@ const result = await persona.processInteraction({
 A sophisticated knowledge representation system that maps your understanding and learning patterns.
 
 **Key Features:**
+
 - **Dynamic Knowledge Mapping**: Real-time updates as you learn
 - **Learning Path Optimization**: Suggests optimal learning sequences
 - **Knowledge Gap Identification**: Pinpoints areas needing improvement
 - **Confidence Scoring**: Tracks mastery levels across domains
 
 **Usage:**
-```typescript
-import { CognitiveGraph } from './core/sovereign-persona/CognitiveGraph';
 
-const cognitiveGraph = new CognitiveGraph('user-123');
+```typescript
+import { CognitiveGraph } from "./core/sovereign-persona/CognitiveGraph";
+
+const cognitiveGraph = new CognitiveGraph("user-123");
 
 // Add new knowledge
 const update = await cognitiveGraph.assimilate({
-  type: 'study-session',
-  content: 'Learning about differential privacy',
-  context: 'machine-learning'
+  type: "study-session",
+  content: "Learning about differential privacy",
+  context: "machine-learning",
 });
 
 // Identify knowledge gaps
 const gaps = await cognitiveGraph.identifyGaps({
-  domain: 'machine-learning',
-  targetLevel: 'advanced'
+  domain: "machine-learning",
+  targetLevel: "advanced",
 });
 
 // Generate learning path
-const path = await cognitiveGraph.generateLearningPath(
-  'become-ai-researcher',
-  { timeAvailable: 10, currentLevel: 'intermediate' }
-);
+const path = await cognitiveGraph.generateLearningPath("become-ai-researcher", {
+  timeAvailable: 10,
+  currentLevel: "intermediate",
+});
 ```
 
 ### 🤝 3. Federated Learning
@@ -166,30 +178,32 @@ const path = await cognitiveGraph.generateLearningPath(
 Privacy-preserving collaborative learning without sharing raw data.
 
 **Key Features:**
+
 - **Secure Aggregation**: Combine insights without exposing individual data
 - **Differential Privacy**: Mathematical guarantees of privacy
 - **Model Personalization**: Learn from collective while staying unique
 - **Contribution Tracking**: Measure and reward valuable contributions
 
 **Usage:**
+
 ```typescript
-import { FederatedLearningClient } from './core/federated-learning/FederatedLearningClient';
+import { FederatedLearningClient } from "./core/federated-learning/FederatedLearningClient";
 
 const flClient = new FederatedLearningClient({
-  clientId: 'user-123',
-  serverUrl: 'https://federated.nexus-protocol.org',
+  clientId: "user-123",
+  serverUrl: "https://federated.nexus-protocol.org",
   participationRate: 0.8,
   privacyBudget: 2.0,
   minClients: 10,
   communicationRounds: 100,
-  localEpochs: 5
+  localEpochs: 5,
 });
 
 // Participate in federated learning
 const result = await flClient.participate({
-  modelType: 'language-understanding',
+  modelType: "language-understanding",
   localData: yourLocalDataset,
-  privacyConstraints: { epsilon: 1.0, delta: 1e-5 }
+  privacyConstraints: { epsilon: 1.0, delta: 1e-5 },
 });
 ```
 
@@ -198,31 +212,33 @@ const result = await flClient.participate({
 Autonomous agent communication using advanced cryptographic techniques.
 
 **Key Features:**
+
 - **Multi-Party Computation (MPC)**: Compute together without revealing inputs
 - **Zero-Knowledge Proofs (ZKP)**: Prove claims without exposing information
 - **Smart Contract Integration**: Automated agreement enforcement
 - **Privacy Budget Management**: Optimize privacy/utility trade-offs
 
 **Usage:**
+
 ```typescript
-import { PrivacyNegotiator } from './core/privacy-negotiator/PrivacyNegotiator';
+import { PrivacyNegotiator } from "./core/privacy-negotiator/PrivacyNegotiator";
 
 const negotiator = new PrivacyNegotiator({
-  personaId: 'user-123',
+  personaId: "user-123",
   privacyPreferences: {
-    dataSharing: 'selective',
-    anonymityLevel: 'high',
-    retentionPeriod: 30
-  }
+    dataSharing: "selective",
+    anonymityLevel: "high",
+    retentionPeriod: 30,
+  },
 });
 
 // Negotiate data sharing
 const result = await negotiator.negotiate({
-  agentId: 'research-lab-456',
-  requestType: 'model-training',
-  dataType: 'anonymized-interactions',
-  purpose: 'academic-research',
-  duration: 90 // days
+  agentId: "research-lab-456",
+  requestType: "model-training",
+  dataType: "anonymized-interactions",
+  purpose: "academic-research",
+  duration: 90, // days
 });
 ```
 
@@ -231,30 +247,32 @@ const result = await negotiator.negotiate({
 Recursive optimization for hyper-efficient AI operations.
 
 **Key Features:**
+
 - **Dynamic Architecture Pruning**: Adapt model complexity to task needs
 - **Carbon-Aware Optimization**: Minimize energy consumption
 - **Real-Time Adaptation**: Adjust performance based on requirements
 - **Resource Allocation**: Optimize compute, memory, and energy usage
 
 **Usage:**
+
 ```typescript
-import { MorphNetEngine } from './core/morphnet-engine/MorphNetEngine';
+import { MorphNetEngine } from "./core/morphnet-engine/MorphNetEngine";
 
 const morphnet = new MorphNetEngine({
   targetLatency: 100, // ms
   maxEnergyBudget: 50, // watts
-  accuracyThreshold: 0.95
+  accuracyThreshold: 0.95,
 });
 
 // Optimize model for specific task
 const optimizedModel = await morphnet.optimize({
-  baseModel: 'large-language-model',
-  task: 'text-classification',
-  constraints: { 
+  baseModel: "large-language-model",
+  task: "text-classification",
+  constraints: {
     maxParams: 1000000,
     maxLatency: 50,
-    carbonBudget: 0.1 // kg CO2
-  }
+    carbonBudget: 0.1, // kg CO2
+  },
 });
 ```
 
@@ -263,26 +281,28 @@ const optimizedModel = await morphnet.optimize({
 Real-time protection against malicious inputs and attacks.
 
 **Key Features:**
+
 - **Semantic Intent Analysis**: Understand true meaning behind inputs
 - **Prompt Injection Detection**: Identify and neutralize manipulation attempts
 - **Agent Hijacking Prevention**: Protect against unauthorized control
 - **Behavioral Anomaly Detection**: Spot unusual patterns
 
 **Usage:**
+
 ```typescript
-import { AdversarialImmuneSystem } from './core/adversarial-immune/AdversarialImmuneSystem';
+import { AdversarialImmuneSystem } from "./core/adversarial-immune/AdversarialImmuneSystem";
 
 const immuneSystem = new AdversarialImmuneSystem({
-  sensitivityLevel: 'high',
-  responseMode: 'quarantine',
-  learningEnabled: true
+  sensitivityLevel: "high",
+  responseMode: "quarantine",
+  learningEnabled: true,
 });
 
 // Scan for threats
 const scan = await immuneSystem.scan({
   input: userInput,
   context: currentSession,
-  source: 'user-interface'
+  source: "user-interface",
 });
 
 if (scan.threatDetected) {
@@ -295,14 +315,16 @@ if (scan.threatDetected) {
 Environmental impact monitoring and optimization.
 
 **Key Features:**
+
 - **Real-Time Carbon Tracking**: Monitor energy consumption
 - **Carbon Budget Management**: Set and track environmental goals
 - **Optimization Opportunities**: Identify efficiency improvements
 - **Sustainability Reporting**: Detailed impact analytics
 
 **Usage:**
+
 ```typescript
-import { CarbonAwareOptimizer } from './core/carbon-aware/CarbonAwareOptimizer';
+import { CarbonAwareOptimizer } from "./core/carbon-aware/CarbonAwareOptimizer";
 
 const carbonOptimizer = new CarbonAwareOptimizer({
   dailyLimit: 5.0, // kg CO2
@@ -310,16 +332,16 @@ const carbonOptimizer = new CarbonAwareOptimizer({
   monthlyLimit: 150.0,
   currentUsage: 12.5,
   remainingBudget: 137.5,
-  alertThresholds: { warning: 80, critical: 95 }
+  alertThresholds: { warning: 80, critical: 95 },
 });
 
 // Optimize AI operation
 const optimized = await carbonOptimizer.optimize({
-  type: 'inference',
+  type: "inference",
   modelSize: 1000000,
   dataVolume: 1000,
   computeIntensity: 0.7,
-  priority: 'medium'
+  priority: "medium",
 });
 ```
 
@@ -328,30 +350,32 @@ const optimized = await carbonOptimizer.optimize({
 Universal interoperability protocol for AI systems.
 
 **Key Features:**
+
 - **Cross-Model Communication**: Enable different AI models to understand each other
 - **Semantic Translation**: Map concepts between different representations
 - **Universal Embeddings**: Create shared understanding spaces
 - **Interoperability Standards**: Ensure compatibility across systems
 
 **Usage:**
+
 ```typescript
-import { LatentSpaceMapping } from './core/latent-mapping/LatentSpaceMapping';
+import { LatentSpaceMapping } from "./core/latent-mapping/LatentSpaceMapping";
 
 const mapper = new LatentSpaceMapping();
 
 // Map between different AI models
 const translation = await mapper.translate({
-  sourceModel: 'gpt-4',
-  targetModel: 'claude-3',
-  concept: 'machine-learning',
-  context: 'technical-discussion'
+  sourceModel: "gpt-4",
+  targetModel: "claude-3",
+  concept: "machine-learning",
+  context: "technical-discussion",
 });
 
 // Create universal embedding
 const universal = await mapper.createUniversalEmbedding({
-  concept: 'privacy-preserving-ai',
-  models: ['gpt-4', 'claude-3', 'gemini-pro'],
-  context: 'research-paper'
+  concept: "privacy-preserving-ai",
+  models: ["gpt-4", "claude-3", "gemini-pro"],
+  context: "research-paper",
 });
 ```
 
@@ -360,6 +384,7 @@ const universal = await mapper.createUniversalEmbedding({
 Comprehensive system monitoring and insights.
 
 **Key Features:**
+
 - **Performance Metrics**: Track system efficiency and effectiveness
 - **Usage Analytics**: Understand how the system is being used
 - **Health Monitoring**: Ensure all components are functioning properly
@@ -370,21 +395,25 @@ Comprehensive system monitoring and insights.
 The project includes several interactive demonstrations:
 
 ### 1. **Cognitive Graph Visualization**
+
 - Real-time visualization of your knowledge graph
 - Interactive exploration of connections and concepts
 - Learning path planning and gap identification
 
 ### 2. **Privacy Negotiator Demo**
+
 - Simulated privacy negotiations between AI agents
 - Visual representation of MPC and ZKP processes
 - Understanding of privacy-preserving computations
 
 ### 3. **Carbon-Aware Dashboard**
+
 - Real-time carbon footprint monitoring
 - Optimization opportunity identification
 - Environmental impact analytics
 
 ### 4. **Adversarial Immune System Demo**
+
 - Interactive threat detection scenarios
 - Visualization of semantic analysis
 - Understanding of AI security mechanisms
@@ -419,6 +448,7 @@ nexus-protocol-vision/
 ### Building from Source
 
 1. **Development**
+
    ```bash
    npm run dev          # Start development server
    npm run build        # Build for production
@@ -426,6 +456,7 @@ nexus-protocol-vision/
    ```
 
 2. **TypeScript Compilation**
+
    ```bash
    npx tsc --noEmit     # Type checking only
    npx tsc              # Compile to JavaScript
@@ -465,11 +496,110 @@ We welcome contributions! Here's how to get started:
 - **Prettier** for formatting
 - **Conventional Commits** for commit messages
 
+### Commit Message Guidelines
+
+We follow **Conventional Commits** specification. This ensures clear, semantic commit history and enables automated changelog generation.
+
+#### Format
+
+```
+<type>(<scope>): <subject>
+```
+
+**Types:**
+
+- `feat` - New feature
+- `fix` - Bug fix
+- `docs` - Documentation changes
+- `style` - Code style changes (formatting, semicolons, etc.)
+- `refactor` - Code refactoring without feature changes
+- `perf` - Performance improvements
+- `test` - Test additions or updates
+- `chore` - Build process, dependencies, or tooling changes
+
+**Scope:** Component or area affected (optional but recommended)
+
+- Examples: `sovereign-persona`, `cognitive-graph`, `privacy-negotiator`, `ui`, `api`
+
+**Subject:**
+
+- Imperative mood ("add" not "added", "fix" not "fixed")
+- Lowercase first letter
+- No period at end
+- Keep under 50 characters
+
+#### Examples
+
+**❌ Bad Commits:**
+
+```
+# Too vague
+git commit -m "stuff"
+
+# Imperative mood violation
+git commit -m "Added new feature for processing user data"
+
+# Mixed concerns
+git commit -m "Fix auth bug and update dependencies"
+
+# Too long subject
+git commit -m "feat: Implement comprehensive sovereign persona with integrated cognitive graph and privacy negotiation systems"
+
+# No type
+git commit -m "Update authentication logic in the user management system"
+
+# Missing scope
+git commit -m "fix: resolve token expiry issue"
+```
+
+**✅ Good Commits:**
+
+```
+# Simple fix with scope
+git commit -m "fix(privacy-negotiator): resolve token expiry validation"
+
+# New feature
+git commit -m "feat(cognitive-graph): add knowledge gap identification"
+
+# Refactoring
+git commit -m "refactor(sovereign-persona): extract interaction processing logic"
+
+# Performance improvement
+git commit -m "perf(morphnet): optimize model pruning algorithm"
+
+# Documentation
+git commit -m "docs(readme): add commit message guidelines"
+
+# Chore with dependency update
+git commit -m "chore(deps): upgrade react to 18.3"
+```
+
+#### Best Practices
+
+1. **One concern per commit** - Keep commits focused and atomic
+2. **Be descriptive in subject** - Clear, concise, specific change description
+3. **Use scope effectively** - Helps organize commit history by area
+4. **Test before committing** - Ensure tests pass locally
+5. **Keep history clean** - Don't force-push unless necessary
+
+#### Automated Hooks
+
+Husky and Commitizen are configured to help enforce these standards:
+
+```bash
+# Use interactive commit interface
+npm run commit
+
+# Or git commit normally (will validate with husky)
+git commit -m "feat(scope): message"
+```
+
 ## 📖 API Reference
 
 ### Core Classes
 
 #### SovereignPersona
+
 ```typescript
 class SovereignPersona {
   constructor(profile: PersonaProfile);
@@ -480,6 +610,7 @@ class SovereignPersona {
 ```
 
 #### CognitiveGraph
+
 ```typescript
 class CognitiveGraph {
   constructor(personaId: string);
@@ -490,6 +621,7 @@ class CognitiveGraph {
 ```
 
 #### PrivacyNegotiator
+
 ```typescript
 class PrivacyNegotiator {
   constructor(preferences: PrivacyPreferences);
@@ -552,18 +684,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🚀 Roadmap
 
 ### Version 1.0 (Current)
+
 - ✅ Core system implementations
 - ✅ Interactive demonstrations
 - ✅ Comprehensive documentation
 - ✅ TypeScript implementation
 
 ### Version 1.1 (Planned)
+
 - 🔄 Mobile applications
 - 🔄 Advanced security features
 - 🔄 Enhanced carbon tracking
 - 🔄 More AI model integrations
 
 ### Version 2.0 (Future)
+
 - 📋 Distributed network capabilities
 - 📋 Blockchain integration
 - 📋 Advanced ZKP implementations
